@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bookoutlet GoodReads Link Adder
 // @namespace    http://tampermonkey.net/
-// @version      0.1.2
+// @version      0.1.3
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://bookoutlet.ca/*
@@ -16,12 +16,12 @@
     'use strict';
     window.onload = function () {
         // https://bookoutlet.ca/browse/products/fiction?size=96 page
-        const titles = document.getElementsByClassName('MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true');
+        const titles = document.getElementsByClassName('MuiGrid-root MuiGrid-item');
         //console.log('books:' + titles.length);
         for (var i = 0; i < titles.length; i++) {
             const t = titles[i].firstChild;
 
-            if (t == null || t.firstChild == null || t.firstChild.nodeValue == null) {
+            if (t == null || t.firstChild == null || t.firstChild.nodeValue == null || t.parentElement === null || t.parentElement.childNodes[1] == null || t.parentElement.childNodes[1].childNodes[1] == null) {
                 continue;
             }
             const t_str = t.firstChild.nodeValue.split("(")[0];
