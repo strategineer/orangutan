@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bookoutlet GoodReads Link Adder
 // @namespace    http://tampermonkey.net/
-// @version      0.1.1
+// @version      0.1.2
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://bookoutlet.ca/*
