@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bookoutlet GoodReads Link Adder
 // @namespace    http://tampermonkey.net/
-// @version      0.1.3
+// @version      0.2
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://bookoutlet.ca/*
@@ -26,12 +26,19 @@
             }
             const t_str = t.firstChild.nodeValue.split("(")[0];
             const author_str = t.parentElement.childNodes[1].childNodes[1].innerText.split(",")[0];
-            const url = `https://www.goodreads.com/search?utf8=%E2%9C%93&q=${author_str + ' ' + t_str}&search_type=books&search%5Bfield%5D=on`;
+            const img = t.parentElement.parentElement.firstChild.firstChild.firstChild.firstChild;
+            const mess = img.parentElement.childNodes[1].innerText;
+            const left = mess.indexOf("/");
+            const right = mess.indexOf(".jpg");
+            let isbn = mess.substring(left, right - 2);
+            const rightmost_slash = isbn.lastIndexOf("/");
+            isbn = isbn.substring(rightmost_slash + 1);
+            //console.log(isbn);
+            const url = `https://www.goodreads.com/search?utf8=%E2%9C%93&q=${isbn}&search_type=books&search%5Bfield%5D=on`;
             t.parentElement.parentElement.parentElement.href = url;
             t.parentElement.parentElement.parentElement.target = "_blank";
-            const img = t.parentElement.parentElement.firstChild.firstChild.firstChild.firstChild;
-            console.log(`book title: ${t_str}, author last name: ${author_str}`);
-            console.log(img.src);
+            //9781538728604-l.jpg
+            //console.log(`book title: ${t_str}, author last name: ${author_str}`);
         }
     }
 })();
