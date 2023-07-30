@@ -1,44 +1,78 @@
 // ==UserScript==
 // @name         Bookoutlet GoodReads Link Adder
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3.0
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://bookoutlet.ca/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=bookoutlet.ca
-// @grant        none
-// @run-at document-start
+// @grant        window.onurlchange
 // @downloadURL  https://raw.githubusercontent.com/strategineer/orangutan/main/bookoutlet.ca.js
 // ==/UserScript==
-// todo: search by isbn
-// todo: write anothe script that auto navigates to the single search result on good reads
 (function () {
     'use strict';
-    window.onload = function () {
-        // https://bookoutlet.ca/browse/products/fiction?size=96 page
-        const titles = document.getElementsByClassName('MuiGrid-root MuiGrid-item');
-        //console.log('books:' + titles.length);
-        for (var i = 0; i < titles.length; i++) {
-            const t = titles[i].firstChild;
+    function resolveAfterDelay(ms) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve('resolved');
+            }, ms);
+        });
+    }
 
-            if (t == null || t.firstChild == null || t.firstChild.nodeValue == null || t.parentElement === null || t.parentElement.childNodes[1] == null || t.parentElement.childNodes[1].childNodes[1] == null) {
-                continue;
+    async function code(ms) {
+        console.log('calling');
+        const result = await resolveAfterDelay(ms);
+        console.log("Adding links...");
+        //await new Promise(r => setTimeout(r, 2000));
+        const images = document.getElementsByTagName('img');
+        console.log('images:' + images.length);
+        for (var i = 0; i < images.length; i++) {
+            try {
+                const img = images[i];
+                let text = "";
+                try {
+                    text = img.parentElement.childNodes[1].innerText;
+                }
+                catch {
+                    text = img.src;
+                }
+                const left = text.indexOf("/");
+                const right = text.indexOf(".jpg");
+                let isbn = text.substring(left, right - 2);
+                const rightmost_slash = isbn.lastIndexOf("/");
+                isbn = isbn.substring(rightmost_slash + 1);
+                if (isbn) {
+                    const url = `https://www.goodreads.com/search?utf8=%E2%9C%93&q=${isbn}&search_type=books&search%5Bfield%5D=on`;
+                    const link = img.parentElement.parentElement.parentElement.parentElement.parentElement;
+                    link.href = url;
+                    link.target = "_blank";
+                    console.log(isbn);
+                    console.log(img);
+                    console.log(img.src);
+                    console.log(link);
+                }
+                //console.log(t_str);
+                //console.log(link);
             }
-            const t_str = t.firstChild.nodeValue.split("(")[0];
-            const author_str = t.parentElement.childNodes[1].childNodes[1].innerText.split(",")[0];
-            const img = t.parentElement.parentElement.firstChild.firstChild.firstChild.firstChild;
-            const mess = img.parentElement.childNodes[1].innerText;
-            const left = mess.indexOf("/");
-            const right = mess.indexOf(".jpg");
-            let isbn = mess.substring(left, right - 2);
-            const rightmost_slash = isbn.lastIndexOf("/");
-            isbn = isbn.substring(rightmost_slash + 1);
-            //console.log(isbn);
-            const url = `https://www.goodreads.com/search?utf8=%E2%9C%93&q=${isbn}&search_type=books&search%5Bfield%5D=on`;
-            t.parentElement.parentElement.parentElement.href = url;
-            t.parentElement.parentElement.parentElement.target = "_blank";
-            //9781538728604-l.jpg
-            //console.log(`book title: ${t_str}, author last name: ${author_str}`);
+            catch (e) {
+                // ignore errors
+                console.log("ERROR:");
+                console.log(images[i]);
+                console.log(images[i].parentElement.parentElement.parentElement.parentElement.parentElement);
+                console.log(e);
+            }
         }
+        console.log("Added links!");
+        // Expected output: "resolved"
+    }
+    window.onload = function () {
+        console.log("onload");
+        code(0);
+    }
+    if (window.onurlchange === null) {
+        window.addEventListener('urlchange', (info) => {
+            console.log('urlchange');
+            code(1000);
+        });
     }
 })();
