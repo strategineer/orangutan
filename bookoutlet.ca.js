@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         Bookoutlet GoodReads Link Adder
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.1.1
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://bookoutlet.ca/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=bookoutlet.ca
 // @grant        none
+// @downloadURL  https://raw.githubusercontent.com/strategineer/orangutan/main/bookoutlet.ca.js
 // ==/UserScript==
 // todo: search by isbn
 // todo: write anothe script that auto navigates to the single search result on good reads
