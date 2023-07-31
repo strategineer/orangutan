@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BookOutlet Link to GoodReads when browsing
 // @namespace    http://tampermonkey.net/
-// @version      0.3.4
+// @version      0.3.5
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://bookoutlet.ca/*
@@ -49,6 +49,12 @@
         return window.location.href.includes("bookoutlet.ca/product");
     }
 
+    function goToGoodReads() {
+        const isbn = parseIsbnFromProductUrl(window.location.href);
+        const url = formatGoodReadsSearchUrlFromIsbn(isbn);
+        window.open(url, "_self");
+    }
+
     async function code(ms) {
         const result = await resolveAfterDelay(ms);
         const images = document.getElementsByTagName('img');
@@ -79,9 +85,7 @@
     }
     window.onload = function () {
         if (isProductPage()) {
-            const isbn = parseIsbnFromProductUrl(window.location.href);
-            const url = formatGoodReadsSearchUrlFromIsbn(isbn);
-            window.open(url, "_self");
+            goToGoodReads();
             return
         }
         code(0);
@@ -89,6 +93,7 @@
     if (window.onurlchange === null) {
         window.addEventListener('urlchange', (info) => {
             if (isProductPage()) {
+                goToGoodReads();
                 return;
             }
             code(500);
