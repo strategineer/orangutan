@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BookOutlet Link to GoodReads when browsing
 // @namespace    http://tampermonkey.net/
-// @version      0.3.1
+// @version      0.3.2
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://bookoutlet.ca/*
@@ -74,7 +74,7 @@
     if (window.onurlchange === null) {
         window.addEventListener('urlchange', (info) => {
             //console.log('urlchange');
-            code(1000);
+            code(4000);
         });
     }
 })();
