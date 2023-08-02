@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         Auto Navigate to single search result
+// @name         Good Reads <> BookOutlet Linker
 // @namespace    http://tampermonkey.net/
-// @version      0.1.3
+// @version      0.2.0
 // @description  try to take over the world!
 // @author       strategineer
-// @match        https://www.goodreads.com/search?*
+// @match        https://www.goodreads.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=goodreads.com
 // @grant        none
 // @run-at document-start
@@ -13,7 +13,12 @@
 
 (function () {
     'use strict';
+    function formatBookOutletSearchUrlFromAuthorAndTitle(author, title) {
+        return `https://bookoutlet.ca/browse?q=${author + ' ' + title}`;
+    }
+
     window.onload = function () {
+        // Auto navigate to the book's page from a single search result.
         const check = document.getElementsByClassName("searchSubNavContainer")[0];
         // desktop
         if (check && check.innerText.includes("Page 1 of about 1 results")) {
@@ -27,6 +32,28 @@
             const a = document.getElementsByClassName("bookCover")[0];
             const url = a.href;
             window.open(url, "_self");
+        }
+
+        // put links to book outlet
+        try {
+            const author = document.getElementsByClassName("ContributorLink__name")[0];
+            author.parentElement.href = formatBookOutletSearchUrlFromAuthorAndTitle(author.innerText, "");
+            author.parentElement.target = "_blank";
+            const title = document.getElementsByClassName("Text Text__title1")[0];
+            console.log(`author: ${author.innerText}, title: ${title.innerText}`);
+            const url = formatBookOutletSearchUrlFromAuthorAndTitle(author.innerText, title.innerText);
+            console.log(url);
+            const book_cover = document.getElementsByClassName("BookPage__bookCover")[0];
+            const link_to_book_outlet = document.createElement('a');
+
+            link_to_book_outlet.href = url;
+            link_to_book_outlet.target = "_blank";
+            // wrap book cover with the link
+            book_cover.parentNode.insertBefore(link_to_book_outlet, book_cover);
+            link_to_book_outlet.appendChild(book_cover);
+        }
+        catch {
+            // ignore errors
         }
     }
 })();
