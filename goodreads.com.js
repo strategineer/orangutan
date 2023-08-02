@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Good Reads <> BookOutlet Linker
 // @namespace    http://tampermonkey.net/
-// @version      0.2.0
+// @version      0.2.1
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://www.goodreads.com/*
@@ -14,7 +14,11 @@
 (function () {
     'use strict';
     function formatBookOutletSearchUrlFromAuthorAndTitle(author, title) {
-        return `https://bookoutlet.ca/browse?q=${author + ' ' + title}`;
+        return `https://bookoutlet.ca/browse?q=${author.replace(" ", "+") + '+' + title.replace(" ", "+")}`;
+    }
+    function wrap(wrapper, wrappee) {
+        wrappee.parentNode.insertBefore(wrapper, wrappee);
+        wrapper.appendChild(wrappee);
     }
 
     window.onload = function () {
@@ -48,9 +52,9 @@
 
             link_to_book_outlet.href = url;
             link_to_book_outlet.target = "_blank";
-            // wrap book cover with the link
-            book_cover.parentNode.insertBefore(link_to_book_outlet, book_cover);
-            link_to_book_outlet.appendChild(book_cover);
+
+            wrap(link_to_book_outlet, book_cover);
+            wrap(link_to_book_outlet.cloneNode(), title);
         }
         catch {
             // ignore errors
