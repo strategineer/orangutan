@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Good Reads <> BookOutlet Linker
+// @name         Goodreads <> BookOutlet Linker
 // @namespace    http://tampermonkey.net/
-// @version      0.2.1
+// @version      0.2.3
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://www.goodreads.com/*
@@ -13,8 +13,8 @@
 
 (function () {
     'use strict';
-    function formatBookOutletSearchUrlFromAuthorAndTitle(author, title) {
-        return `https://bookoutlet.ca/browse?q=${author.replace(" ", "+") + '+' + title.replace(" ", "+")}`;
+    function formatBookOutletSearchUrl(term) {
+        return `https://bookoutlet.ca/browse?q=${term.replace(/ /g, "+")}`;
     }
     function wrap(wrapper, wrappee) {
         wrappee.parentNode.insertBefore(wrapper, wrappee);
@@ -40,24 +40,26 @@
 
         // put links to book outlet
         try {
-            const author = document.getElementsByClassName("ContributorLink__name")[0];
-            author.parentElement.href = formatBookOutletSearchUrlFromAuthorAndTitle(author.innerText, "");
-            author.parentElement.target = "_blank";
+            const authors = document.getElementsByClassName("ContributorLink__name");
+            for (var i = 0; i < authors.length; i++) {
+                authors[i].parentElement.href = formatBookOutletSearchUrl(authors[i].innerText);
+                authors[i].parentElement.target = "_blank";
+            }
             const title = document.getElementsByClassName("Text Text__title1")[0];
-            console.log(`author: ${author.innerText}, title: ${title.innerText}`);
-            const url = formatBookOutletSearchUrlFromAuthorAndTitle(author.innerText, title.innerText);
-            console.log(url);
+            //console.log(`author: ${authors[0].innerText}, title: ${title.innerText}`);
+            const url = formatBookOutletSearchUrl(title.innerText);
+            //console.log(url);
             const book_cover = document.getElementsByClassName("BookPage__bookCover")[0];
             const link_to_book_outlet = document.createElement('a');
-
             link_to_book_outlet.href = url;
             link_to_book_outlet.target = "_blank";
 
             wrap(link_to_book_outlet, book_cover);
             wrap(link_to_book_outlet.cloneNode(), title);
         }
-        catch {
+        catch (e) {
             // ignore errors
+            //console.log(e);
         }
     }
 })();
