@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Goodreads <> BookOutlet Linker
 // @namespace    http://tampermonkey.net/
-// @version      0.2.4
+// @version      0.3.0
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://www.goodreads.com/*
@@ -34,6 +34,9 @@
                 const randomBook = bookTitles[index];
                 const title = randomBook.children[1].children[0].title;
                 console.log(`From ${bookTitles.length} books, chose ${title}`);
+                const searchbox = document.getElementById("sitesearch_field");
+                searchbox.value = title;
+                searchbox.parentNode.submit();
             } catch (e) {
             }
         }
