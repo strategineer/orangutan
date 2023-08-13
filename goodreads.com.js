@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Goodreads <> BookOutlet Linker
 // @namespace    http://tampermonkey.net/
-// @version      0.2.3
+// @version      0.2.4
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://www.goodreads.com/*
@@ -10,6 +10,7 @@
 // @run-at document-start
 // @downloadURL  https://raw.githubusercontent.com/strategineer/orangutan/main/goodreads.com.js
 // ==/UserScript==
+
 
 (function () {
     'use strict';
@@ -20,8 +21,22 @@
         wrappee.parentNode.insertBefore(wrapper, wrappee);
         wrapper.appendChild(wrappee);
     }
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
 
     window.onload = function () {
+        // randomly pick a book from the shelf
+        const bookTitles = document.getElementsByClassName("field title");
+        if (bookTitles) {
+            try {
+                const index = getRandomInt(bookTitles.length)
+                const randomBook = bookTitles[index];
+                const title = randomBook.children[1].children[0].title;
+                console.log(`From ${bookTitles.length} books, chose ${title}`);
+            } catch (e) {
+            }
+        }
         // Auto navigate to the book's page from a single search result.
         const check = document.getElementsByClassName("searchSubNavContainer")[0];
         // desktop
