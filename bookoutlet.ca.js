@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BookOutlet <> Goodreads Linker
 // @namespace    http://tampermonkey.net/
-// @version      0.4.2
+// @version      0.4.3
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://bookoutlet.ca/*
@@ -66,7 +66,7 @@
     }
     window.onload = function () {
         if (isCurrentlyOnProductPage()) {
-            goToGoodReads();
+            //goToGoodReads();
             return
         }
         code(0);
