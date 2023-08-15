@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Goodreads <> BookOutlet Linker
 // @namespace    http://tampermonkey.net/
-// @version      0.3.1
+// @version      0.4.0
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://www.goodreads.com/*
@@ -16,6 +16,9 @@
     'use strict';
     function formatBookOutletSearchUrl(term) {
         return `https://bookoutlet.ca/browse?q=${term.replace(/ /g, "+")}`;
+    }
+    function formatBookOutletProductUrl(isbn) {
+        return `https://bookoutlet.ca/products/${isbn}B`;
     }
     function wrap(wrapper, wrappee) {
         wrappee.parentNode.insertBefore(wrapper, wrappee);
@@ -68,7 +71,8 @@
             }
             const title = document.getElementsByClassName("Text Text__title1")[0];
             //console.log(`author: ${authors[0].innerText}, title: ${title.innerText}`);
-            const url = formatBookOutletSearchUrl(title.innerText);
+            const isbn = document.getElementsByClassName("EditionDetails")[0].children[1].children[2].children[1].firstChild.firstChild.innerText.split(" ")[0];
+            const url = formatBookOutletProductUrl(isbn);
             //console.log(url);
             const book_cover = document.getElementsByClassName("BookPage__bookCover")[0];
             const link_to_book_outlet = document.createElement('a');
