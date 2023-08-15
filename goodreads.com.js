@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Goodreads <> BookOutlet Linker
 // @namespace    http://tampermonkey.net/
-// @version      0.3.0
+// @version      0.3.1
 // @description  try to take over the world!
 // @author       strategineer
 // @match        https://www.goodreads.com/*
@@ -27,9 +27,11 @@
 
     window.onload = function () {
         // randomly pick a book from the shelf
-        const bookTitles = document.getElementsByClassName("field title");
-        if (bookTitles) {
-            try {
+        try {
+            const bookTitles = document.getElementsByClassName("field title");
+            const shelfName = document.getElementsByClassName("h1Shelf")[0].innerText;
+            console.log(shelfName);
+            if (shelfName.startsWith("owned") && bookTitles) {
                 const index = getRandomInt(bookTitles.length)
                 const randomBook = bookTitles[index];
                 const title = randomBook.children[1].children[0].title;
@@ -37,9 +39,10 @@
                 const searchbox = document.getElementById("sitesearch_field");
                 searchbox.value = title;
                 searchbox.parentNode.submit();
-            } catch (e) {
             }
+        } catch (e) {
         }
+
         // Auto navigate to the book's page from a single search result.
         const check = document.getElementsByClassName("searchSubNavContainer")[0];
         // desktop
